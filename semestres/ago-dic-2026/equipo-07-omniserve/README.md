@@ -78,16 +78,14 @@ pip install -r servidor/requirements.txt
 
 ### Cómo ejecutar el sistema completo
 
-**1. Levantar el broker MQTT** (en una terminal aparte):
-bash
-mosquitto -v
+**1. Cargar firmware en la ESP32:
+Abrir Thonny → conectar la ESP32 por USB → cargar el archivo main.py y las librerías de los sensores a la placa. (Asegúrate de que la IP del broker esté configurada en el código antes de subirlo). 
 
-**2. Cargar firmware en la ESP32:
-Abrir Thonny → conectar la ESP32 por USB → cargar el archivo main.py y las librerías de los sensores a la placa. (Asegúrate de que la IP del broker 192.168.1.69 esté configurada en el código antes de subirlo). 
+**2. Descargar el .html
+Descargar el archivo omniserve.html, abrir una terminal en la carpeta que se descargo y ejecutar python -m http.server 8000
 
-**3. Ejecutar el servidor de IA
-# Asegúrate de tener la cámara web conectada
-python main_ia.py
+**3. Probar
+En cualquier navegador ir a la url: http://localhost:8000/omniserve.html
 
 
 ### Librerías ESP32 (MicroPython - corren en la placa)
@@ -125,13 +123,11 @@ python main_ia.py
 
 ## 🎥 Demostración
 
-**Video demostrativo (YouTube):** [▶️ Ver video](https://youtube.com/watch?v=XXXXXXXX)
+**Video demostrativo (YouTube):** [▶️ Ver video](https://www.youtube.com/watch?v=B5g6EWZVnKM)
 
 ### Fotos del prototipo final
 
-| Vista frontal | Vista interna | Sistema en operación |
-|--------------|---------------|----------------------|
-| ![frontal](media/prototipo-frontal.jpg) | ![interna](media/prototipo-interno.jpg) | ![operacion](media/sistema-operacion.jpg) |
+| [](media/1.jpg) | [](media/2.jpg) 
 
 ---
 
@@ -169,18 +165,26 @@ python main_ia.py
 ## 🔥 Esquema Firebase
 
 ```
-/nombre-proyecto/
-  /lecturas/{timestamp}/
-      sensor1: valor
-      sensor2: valor
-      sensor3: valor
-  /eventos_ia/{timestamp}/
-      deteccion: "clase"
-      accion: "actuador_ON"
-      confianza: 0.92
-  /estado_actual/
-      sensor1: ultimo_valor
-      actuador1: "ON"
+## 🔥 Esquema Firebase
+
+```text
+/Omniserve (Cloud Firestore)/
+  /Actuadores/{doc_id}/
+      Bomba1(rele1): false
+      Bomba2(rele2): false
+      Bomba3(rele3): false
+      Bomba4(rele4): false
+      Servo1: 0
+      Servo2: 0
+  /Sensores/{doc_id}/
+      temp: 24
+      hum: 55
+      dist: 12.4
+      peso: 250.0
+  /omniserve_logs/{doc_id}/
+      evento: "rostro_detectado"
+      accion: "secuencia_dispensado"
+      timestamp: "2026-11-23T22:30:00Z"
 ```
 
 ---
