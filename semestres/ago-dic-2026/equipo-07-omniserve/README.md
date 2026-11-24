@@ -127,9 +127,9 @@ En cualquier navegador ir a la url: http://localhost:8000/omniserve.html
 
 ### Fotos del prototipo final
 
-![Prototipo 1](media/1.jpg)
+![Prototipo 1](media/1.jpeg)
 
-![Prototipo 2](media/2.jpg)
+![Prototipo 2](media/2.jpeg)
 
 ---
 
