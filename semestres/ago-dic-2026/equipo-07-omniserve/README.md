@@ -64,7 +64,7 @@ OmniServe ayuda a usuarios que requieren automatizar mecanismos físicos de serv
 > Guarda la imagen en `hardware/` y actualiza la ruta abajo.
 
 ![Diagrama de conexiones](Hardware/diagrama.png)
-![Diagrama de conexiones](Hardware/circuito.png)
+![Diagrama de conexiones](Hardware/circuito.jpeg)
 
 ---
 
