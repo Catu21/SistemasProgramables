@@ -10,7 +10,10 @@ from datetime import datetime
 # --- Configuración Firebase ---
 ruta_credenciales = "credenciales.json" 
 credencial = credentials.Certificate(ruta_credenciales)
-firebase_admin.initialize_app(credencial)
+try:
+    firebase_admin.initialize_app(credencial)
+except ValueError:
+    pass # Previene crasheos si reinicias el script rápido
 db = firestore.client()
 print("Conectado a Firebase Firestore.")
 
@@ -23,11 +26,11 @@ if not os.path.isfile(xml_file):
 
 # --- Configuración MQTT ---
 MQTT_BROKER = "192.168.1.69" 
-MQTT_TOPIC_SERVO = "omniserve/servo1/cmd"
 
 cliente_mqtt = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id="IA_Laptop_Omniserve")
 try:
     cliente_mqtt.connect(MQTT_BROKER)
+    cliente_mqtt.loop_start() # Mantiene el flujo de red abierto en segundo plano
     print("Conectado al Broker MQTT.")
 except Exception as e:
     print(f"Error conectando a MQTT: {e}")
@@ -38,7 +41,7 @@ cap = cv2.VideoCapture(0)
 print("Iniciando cámara... Presiona 'q' para salir.")
 
 tiempo_ultimo_comando = 0
-cooldown_segundos = 3 
+cooldown_segundos = 4 # Aumentado a 4s para dar margen a toda la secuencia
 
 while True:
     ret, frame = cap.read()
@@ -52,7 +55,7 @@ while True:
     color_texto = (0, 255, 0) 
 
     if len(rostros) > 0:
-        texto_estado = "Rostro detectado! Activando Servo..."
+        texto_estado = "Rostro detectado! Activando sistema completo..."
         color_texto = (0, 0, 255) 
         
         for (x, y, w, h) in rostros:
@@ -60,23 +63,39 @@ while True:
         
         tiempo_actual = time.time()
         if tiempo_actual - tiempo_ultimo_comando > cooldown_segundos:
-            # 1. Activar MQTT
-            cliente_mqtt.publish(MQTT_TOPIC_SERVO, "90")
-            print("IA detecta rostro -> actuador activado")
+            print("IA detecta rostro -> enviando secuencia escalonada al ESP32...")
             
-            # 2. Registrar en Firebase
+# 1. Enviar órdenes (Cambiamos "ON" por "1" para evitar crasheo en el ESP32)
+            cliente_mqtt.publish("omniserve/servo1/cmd", "90")
+            time.sleep(0.3)
+            cliente_mqtt.publish("omniserve/servo2/cmd", "90")
+            time.sleep(0.3)
+            
+            # Si en tu MQTT Dash usas otro valor para encender (ej. "true"), ponlo aquí en lugar de "1"
+            cliente_mqtt.publish("omniserve/rele1/cmd", "0")
+            time.sleep(0.3)
+            cliente_mqtt.publish("omniserve/rele2/cmd", "0")
+            time.sleep(0.3)
+            cliente_mqtt.publish("omniserve/rele3/cmd", "0")
+            time.sleep(0.3)
+            cliente_mqtt.publish("omniserve/rele4/cmd", "0")
+            
+            print("Secuencia completa activada en hardware.")
+            
+            # 2. Registrar el bloque entero en Firebase
             try:
                 fecha_hora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 db.collection('omniserve_logs').add({
                     'evento': 'Rostro detectado',
-                    'accion': 'Servo 1 activado',
+                    'accion': 'Activacion: 2 Servos (90), 4 Reles (ON)',
                     'timestamp': fecha_hora
                 })
                 print(f"Log guardado en Firebase exitosamente a las {fecha_hora}")
             except Exception as e:
                 print(f"Error al subir a Firebase: {e}")
                 
-            tiempo_ultimo_comando = tiempo_actual
+            # Reiniciar el temporizador usando el tiempo exacto en el que terminó la secuencia
+            tiempo_ultimo_comando = time.time()
 
     cv2.putText(frame, texto_estado, (20, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.8, color_texto, 2)
     cv2.imshow("Camara Omniserve - IA", frame)
@@ -85,4 +104,6 @@ while True:
         break
 
 cap.release()
+cliente_mqtt.loop_stop()
+cliente_mqtt.disconnect()
 cv2.destroyAllWindows()
