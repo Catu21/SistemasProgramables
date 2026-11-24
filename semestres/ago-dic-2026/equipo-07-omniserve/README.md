@@ -63,7 +63,8 @@ OmniServe ayuda a usuarios que requieren automatizar mecanismos físicos de serv
 > Puede ser un diagrama hecho en cualquier herramienta (Fritzing, draw.io, Canva, foto del circuito, etc.).
 > Guarda la imagen en `hardware/` y actualiza la ruta abajo.
 
-![Diagrama de conexiones](hardware/diagrama.png)
+![Diagrama de conexiones](Hardware/diagrama.png)
+![Diagrama de conexiones](Hardware/circuito.png)
 
 ---
 
