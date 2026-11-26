@@ -123,7 +123,7 @@ En cualquier navegador ir a la url: http://localhost:8000/omniserve.html
 
 ## 🎥 Demostración
 
-**Video demostrativo (YouTube):** [▶️ Ver video](https://www.youtube.com/watch?v=B5g6EWZVnKM)
+**Video demostrativo (YouTube):** [▶️ Ver video](https://youtu.be/QffapX81JiU)
 
 ### Fotos del prototipo final
 
