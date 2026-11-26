@@ -1,3 +1,17 @@
+"""
+Proyecto: OmniServe - Sistema Dispensador Automatizado
+Materia: Sistemas Programables
+Equipo: 07
+Integrantes: Diego Jahzeel Méndez Martínez (23240829), Joshua Maximiliano Anguiano Contreras (23240329)
+Archivo: main.py (Firmware ESP32)
+
+Objetivo:
+Gestionar la lectura en tiempo real de los sensores ambientales y de presencia 
+(DHT11, ultrasónico HC-SR04 y celda de carga HX711), publicar la telemetría 
+hacia el broker MQTT y ejecutar los comandos recibidos para controlar de forma 
+automatizada los 4 relés (bombas) y 2 servomotores del dispensador.
+"""
+
 import network
 import time
 import dht

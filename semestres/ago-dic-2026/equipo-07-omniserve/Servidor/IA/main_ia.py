@@ -1,3 +1,17 @@
+"""
+Proyecto: OmniServe - Sistema Dispensador Automatizado
+Materia: Sistemas Programables
+Equipo: 07
+Integrantes: Diego Jahzeel Méndez Martínez (23240829), Joshua Maximiliano Anguiano Contreras (23240329)
+Archivo: main_ia.py (Servidor de Visión Artificial)
+
+Objetivo:
+Detectar rostros humanos frontales en tiempo real mediante OpenCV (Haar Cascade) 
+a través de la cámara web para disparar la secuencia automatizada de dispensación 
+enviando comandos por MQTT a la ESP32, mientras registra el historial de eventos 
+y estados en Cloud Firestore (Firebase).
+"""
+
 import cv2
 import paho.mqtt.client as mqtt
 import time
